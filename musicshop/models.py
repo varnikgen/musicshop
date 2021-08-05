@@ -4,6 +4,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.db.models.base import Model
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 
 from utils import upload_function
 
@@ -13,7 +14,7 @@ class MediaType(models.Model):
 
     name = models.CharField(max_length=100, verbose_name="Название медианосителя")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:
@@ -28,7 +29,7 @@ class Member(models.Model):
     slug = models.SlugField()
     image = models.ImageField(upload_to=upload_function, null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:
@@ -41,7 +42,7 @@ class Genre(models.Model):
     name = models.CharField(max_length=50, verbose_name='Название жанра')
     slug = models.SlugField()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:
@@ -58,7 +59,7 @@ class Artist(models.Model):
     slug = models.SlugField()
     image = models.ImageField(upload_to=upload_function, null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     class Meta:
@@ -81,7 +82,7 @@ class Album(models.Model):
     offer_of_the_week = models.BooleanField(default=False, verbose_name="Предложение недели?")
     image = models.ImageField(upload_to=upload_function)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.id} | {self.artist.name} |  {self.name}"
 
     @property
@@ -104,7 +105,7 @@ class CartProduct(models.Model):
     qty = models.PositiveIntegerField(default=1)
     final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name="Общая цена")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Продукт: {self.content_object.name} (для корзины)"
 
     def save(self, *args, **kwargs):
@@ -126,7 +127,7 @@ class Cart(models.Model):
     in_order = models.BooleanField(default=False)
     for_anonimus_user = models.BooleanField(default=False)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.id)
 
     class Meta:
@@ -169,7 +170,7 @@ class Order(models.Model):
     created_at = models.DateField(verbose_name='Дата создания заказа', auto_now=True)
     order_date = models.DateField(verbose_name='Дата получения заказа', default=timezone.now )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.id)
 
     class Meta:
@@ -186,7 +187,7 @@ class Customer(models.Model):
     phone = models.CharField(max_length=20, verbose_name='Номер телефона')
     address = models.TextField(null=True, blank=True, verbose_name='Адрес')
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.user.username}"
 
     class Meta:
@@ -220,6 +221,9 @@ class ImageGallery(models.Model):
 
     def __str__(self) -> str:
         return f"Изображение для {self.content_object}"
+
+    def image_url(self):
+        return mark_safe(f'<img src="{self.image.url}" width="auto" height="280px"')
 
     class Meta:
         verbose_name = 'Галерея изображений'

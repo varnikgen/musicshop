@@ -10,7 +10,7 @@ class ImageUploadHelper:
             'field': 'slug',
             'upload_postfix': 'members_images'
         },
-        'Artists': {
+        'Artist': {
             'field': 'slug',
             'upload_postfix': 'artists_images'
         },
