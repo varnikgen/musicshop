@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.db.models.base import Model
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 
@@ -61,6 +62,9 @@ class Artist(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+    def get_absolute_url(self):
+        return reverse('artist_detail', kwargs={'artist_slug': self.slug})
 
     class Meta:
         verbose_name = 'Исполнитель'
@@ -84,6 +88,9 @@ class Album(models.Model):
 
     def __str__(self) -> str:
         return f"{self.id} | {self.artist.name} |  {self.name}"
+
+    def get_absolute_url(self):
+        return reverse('album_detail', kwargs={'artist_slug': self.artist.slug, 'album_slug': self.slug})
 
     @property
     def ct_model(self):
